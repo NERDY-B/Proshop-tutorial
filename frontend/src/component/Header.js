@@ -1,8 +1,18 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Navbar, Nav, Container } from 'react-bootstrap'
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'
+import { logout } from '../action/userAction';
 
 const Header = () => {
+    const dispatch = useDispatch()
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    const logoutHandler = () => {
+        dispatch(logout())
+    }
     return (
         <header>
             <Navbar expand="lg" className="bg-body-tertiary" bg='dark' data-bs-theme='dark' collapseOnSelect>
@@ -19,17 +29,28 @@ const Header = () => {
                                     <i className='fas fa-shopping-cart'></i>Cart
                                 </Nav.Link>
                             </LinkContainer>
-
-                            <LinkContainer to='/login'>
+                            {userInfo ? (
+                                <NavDropdown title={userInfo.name} id="username">
+                                    <LinkContainer to='/profile'>
+                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                    </LinkContainer>
+                                    <NavDropdown.Item onClick={logoutHandler}>
+                                        Logout
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            ) : <LinkContainer to='/login'>
                                 <Nav.Link>
                                     <i className="fa fa-user" aria-hidden="true"></i>Sign in
                                 </Nav.Link>
                             </LinkContainer>
+                            }
+
+
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
-            </Navbar>
-        </header>
+            </Navbar >
+        </header >
     )
 }
 
