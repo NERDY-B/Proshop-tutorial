@@ -21,9 +21,12 @@ const userSchema = mongoose.Schema({
         default: false
     }
 }, {
-    timestamp: true
+    timestamps: true
 })
 
+
+//this methods allow for authentication to compare what is in the request and the password stored in the 
+//the database (model)
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }

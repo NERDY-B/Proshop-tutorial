@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Table, Form, Button, Row, Col } from 'react-bootstrap'
+// import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../component/Message'
 import Loader from '../component/Loader'
-import { getUserDetails, } from '../action/userAction'
+import { getUserDetails, updateUserProfile } from '../action/userAction'
+import { listMyOrders } from '../action/orderAction'
+import { LinkContainer } from 'react-router-bootstrap'
 
 const ProfileScreen = ({ location, history }) => {
     const [name, setName] = useState('')
@@ -20,11 +22,17 @@ const ProfileScreen = ({ location, history }) => {
 
     const userDetails = useSelector(state => state.userDetails)
     const { loading, error, user } = userDetails
-
-    console.log(userDetails, `userDetails`)
+    console.log(user)
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
+
+    const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
+    const { success } = userUpdateProfile
+
+    const orderListMy = useSelector(state => state.orderListMy)
+    const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+    console.log(orders, 'orders')
 
     const redirect = location.search ? location.search.split('=')[1] : '/'
 
@@ -32,9 +40,10 @@ const ProfileScreen = ({ location, history }) => {
         if (!userInfo) {
             history.push('/login')
         } else {
-
+            console.log(user, 'user')
             if (!user.name) {
                 dispatch(getUserDetails('profile'))
+                dispatch(listMyOrders())
             } else {
                 setName(user.name)
                 setEmail(user.email)
@@ -49,10 +58,9 @@ const ProfileScreen = ({ location, history }) => {
     const submitHandler = (e) => {
         e.preventDefault()
         if (password !== confirmPassword) {
-            g
             setMessage('Passwords do not match')
         } else {
-            //dispatch update profile
+            dispatch(updateUserProfile({ id: user._id, name, email, password }))
         }
     }
 
@@ -61,6 +69,7 @@ const ProfileScreen = ({ location, history }) => {
             <h2>User Profile</h2>
             {message && <Message variant='danger'>{message}</Message>}
             {error && <Message variant='danger'>{error}</Message>}
+            {success && <Message variant='success'>Profile Updated</Message>}
             {loading && <Loader />}
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='name'>
@@ -102,6 +111,41 @@ const ProfileScreen = ({ location, history }) => {
         </Col>
         <Col md={9}>
             <h2>My Orders</h2>
+            {loadingOrders ? <Loader /> : errorOrders ? <Message variant='danger'>{errorOrders}</Message>
+                : (
+                    <Table striped bordered hover responsive className='table-sm'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>DATE</th>
+                                <th>TOTAL</th>
+                                <th>PAID</th>
+                                <th>DELIVERED</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.length > 0 && orders.map(order => (
+                                <tr key={order._id}>
+                                    <td>{order._id}</td>
+                                    <td>{order.createdAt?.substring(0, 10)}</td>
+                                    <td>{order.totalPrice}</td>
+                                    <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
+                                        <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                    )}</td>
+                                    <td>{order.isDelivered ? order.deliveredAt.substring(0, 10) : (
+                                        <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                    )}</td>
+                                    <td>
+                                        <LinkContainer to={`/order/${order._id}`}>
+                                            <Button className='btn-sm' variant='light'>Details</Button>
+                                        </LinkContainer>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
         </Col>
     </Row>
 }

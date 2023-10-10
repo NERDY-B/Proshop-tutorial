@@ -10,19 +10,30 @@ const protect = asyncHandler(async (req, res, next) => {
     console.log(req.headers.authorization, 'request .headers.authorization')
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         console.log(`got here`)
+        console.log('another one here')
+        // try {
+        // console.log('another got here')
+        // token = req.headers.authorization.split(' ')[1]
+
+        // console.log(token, 'token')
+        // console.log(process.env.JWT_SECRET, 'process.env')
+
+        // const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+        // req.user = await User.findById(decoded.id).select('-password')
+
+        // if (req.user) console.log('okay at user')
+
+        // next()
         try {
             token = req.headers.authorization.split(' ')[1]
-
-            console.log(token, 'token')
-            console.log(process.env.JWT_SECRET, 'process.env')
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
             req.user = await User.findById(decoded.id).select('-password')
 
-
-
             next()
+
 
         } catch (error) {
             console.log(error)
@@ -38,4 +49,12 @@ const protect = asyncHandler(async (req, res, next) => {
 
 })
 
-export { protect }
+const admin = (req, res, next) => {
+    if (req.user && req.user.isAdmin) {
+        next()
+    } else {
+        res.status(401)
+        throw new Error('Not authorized as an admin')
+    }
+}
+export { protect, admin }

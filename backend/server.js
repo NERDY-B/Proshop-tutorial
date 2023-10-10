@@ -7,6 +7,7 @@ import connectDB from './config/db.js';
 
 import productRoutes from './routes/productRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
 //HTTP server creation file 
 
 //allows for script to load environment variables from any .env file extension found in the same directory as the file 
@@ -29,6 +30,13 @@ app.get('/', (req, res) => {
 //file in our project folder in backend and load it content once a request is made matching the reques in the parenthesis
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/orders', orderRoutes)
+
+app.get('/api/config/paypal', (req, res) =>
+    res.send(process.env.PAYPAL_CLIENT_ID)
+)
+//an "endpoint" typically refers to a specific URL or route within your server application 
+//Contains the url and a function which can be defined in the parameter parenthesis or importe
 
 app.use(notFound)
 
