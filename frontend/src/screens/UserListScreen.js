@@ -16,7 +16,7 @@ const UserListScreen = ({ history }) => {
     const { userInfo } = userLogin
 
     const userDelete = useSelector(state => state.userDelete)
-    const { success: successDelete } = userLogin
+    const { success: successDelete } = userDelete
 
     console.log(users, 'users')
     useEffect(() => {
@@ -25,10 +25,12 @@ const UserListScreen = ({ history }) => {
         } else {
             history.push('/login')
         }
-    }, [dispatch, history, successDelete])
+    }, [dispatch, history, successDelete, userInfo])
 
     const deleteHandler = (id) => {
-        dispatch(deleteUser(id))
+        if (window.confirm('Are you sure')) {
+            dispatch(deleteUser(id))
+        }
     }
     return (
         <>
@@ -59,7 +61,7 @@ const UserListScreen = ({ history }) => {
                                         )}
                                     </td>
                                     <td>
-                                        <LinkContainer to={`/user/${user._id}/edit`}>
+                                        <LinkContainer to={`/admin/user/${user._id}/edit`}>
                                             <Button variant='light' className='btn-sm'>
                                                 <i className='fas fa-edit'></i>
                                             </Button>

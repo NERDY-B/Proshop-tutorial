@@ -8,23 +8,14 @@ const protect = asyncHandler(async (req, res, next) => {
 
     console.log(req.headers, 'request .headers')
     console.log(req.headers.authorization, 'request .headers.authorization')
+    // router.route('/:id/reviews').post(protect, createProductReview)
+    // ask chinedu or abiola how does this in router file connects with the req.header.authorization
+    //protect middle ware does executes first then the controller function , so where does the req.headers.authorizatoin comes
+    // and how generate token comes in the picture 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         console.log(`got here`)
         console.log('another one here')
-        // try {
-        // console.log('another got here')
-        // token = req.headers.authorization.split(' ')[1]
 
-        // console.log(token, 'token')
-        // console.log(process.env.JWT_SECRET, 'process.env')
-
-        // const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
-        // req.user = await User.findById(decoded.id).select('-password')
-
-        // if (req.user) console.log('okay at user')
-
-        // next()
         try {
             token = req.headers.authorization.split(' ')[1]
 
