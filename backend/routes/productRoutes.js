@@ -8,13 +8,14 @@ import {
     createProduct,
     updateProduct,
     createProductReview,
+    getTopProducts
     // getTopProducts
 } from '../controllers/productController.js'
 import { protect, admin } from '../middleware/authMiddleware.js'
 //ask chinedu or abiola varying instances to use router.route with a CRUD METHODS OR just route.get or any CRUD
 router.route('/').get(getProducts).post(protect, admin, createProduct)
 router.route('/:id/reviews').post(protect, createProductReview)
-// router.get('/top', getTopPr/oducts)
+router.get('/top', getTopProducts)
 router
     .route('/:id')
     .get(getProductById)
