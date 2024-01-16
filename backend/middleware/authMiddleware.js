@@ -8,19 +8,18 @@ const protect = asyncHandler(async (req, res, next) => {
 
     console.log(req.headers, 'request .headers')
     console.log(req.headers.authorization, 'request .headers.authorization')
+    //req.headers.authorization holds or storer the bearer token value 
     // router.route('/:id/reviews').post(protect, createProductReview)
     // ask chinedu or abiola how does this in router file connects with the req.header.authorization
     //protect middle ware does executes first then the controller function , so where does the req.headers.authorizatoin comes
     // and how generate token comes in the picture 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        console.log(`got here`)
-        console.log('another one here')
 
         try {
             token = req.headers.authorization.split(' ')[1]
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
+            //how did req.user get in the picture? does it mean all req object has property called user ?
             req.user = await User.findById(decoded.id).select('-password')
 
             next()

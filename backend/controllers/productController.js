@@ -18,7 +18,8 @@ const getProducts = asyncHandler(async (req, res) => {
     const count = await Product.countDocuments({ ...keyword })
     const products = await Product.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1))
     //.find() is a mongoose method and does return a promise
-
+    console.log(req)
+    //list of what in the req obj
     res.json({ products, page, pages: Math.ceil(count / pageSize) });
 })
 

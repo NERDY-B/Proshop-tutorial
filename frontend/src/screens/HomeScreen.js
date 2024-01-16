@@ -12,7 +12,7 @@ import ProductCarousel from '../component/ProductCarousel'
 import Meta from '../component/Meta'
 import { listProducts } from '../action/productActions'
 
-const HomeScreen = ({ match }) => {
+const HomeScreen = ({ history, match }) => {
     const keyword = match.params.keyword
 
     const pageNumber = match.params.pageNumber || 1
@@ -32,7 +32,7 @@ const HomeScreen = ({ match }) => {
             <Meta />
             {!keyword ? <ProductCarousel /> : <Link to='/' className='btn btn-light'></Link>}
             <h1>Latest Product</h1>
-            {/* <button onClick={() => history.push('/test')}>Go to Test</button> */}
+            <button onClick={() => history.push('/test')}>Go to Test</button>
             {loading ? (<Loader />) : error ? (<Message variant='danger'>{error}</Message>) : (
                 <>
                     <Row>

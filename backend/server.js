@@ -27,11 +27,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json())
-//allows us accept json data in the postman body
+//a body parser that allows us accept json data in the postman body, or data in req.body for getting values of data from a form when submitted
 
-app.get('/', (req, res) => {
-    res.send('API is running');
-})
+
 
 //with sserver creation file, using the method use() allows us to point to certain 
 //file in our project folder in backend and load it content once a request is made matching the reques in the parenthesis
@@ -48,6 +46,20 @@ app.get('/api/config/paypal', (req, res) =>
 
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+    )
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running....')
+    })
+}
+
 //by default our upload folder in the root dir is not accessible consequentially we use 
 //express to make it accessible my convertng the folder to become satic uisng express.static()
 
